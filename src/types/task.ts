@@ -35,5 +35,3 @@ export type TaskFormProps = {
 };
 
 
-export type StatusFilter = "all" | "active" | "completed";
-export type SortType = "none" | "priority" | "dueDate";
