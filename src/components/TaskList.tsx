@@ -1,39 +1,43 @@
 "use client";
 
-import { Task } from "../types/task";
+import { memo } from "react";
+import { TaskListProps } from "../types/task";
 import TaskItem from "./TaskItem";
 
-type TaskListProps = {
-  tasks: Task[];
-  openedMemoId: string | null;
-  onToggleCompleted: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (id: string) => void;
-  onSelect:(id:string) => void;
-};
+/**
+ * タスク一覧を表示するコンポーネント
+ */
+function TaskListComponent({
+  tasks,
+  openedMemoId,
+  onToggleCompleted,
+  onDelete,
+  onEdit,
+  onToggleDetail,
+}: TaskListProps) {
+  if (tasks.length === 0) {
+    return (
+      <div className="text-sm text-gray-500 text-center py-8">
+        タスクがありません
+      </div>
+    );
+  }
 
-export default function TaskList (props: TaskListProps){
-  const {tasks, openedMemoId, onToggleCompleted, onDelete, onEdit, onSelect} = props;
-
-  return(
+  return (
     <ul className="space-y-3 mt-4">
-      {tasks.length === 0 && (
-        <li className="text-sm text-gray-500 text-center py-4">
-          タスクがありません
-        </li>
-      )}
-      
-      {tasks.map(task => (
+      {tasks.map((task) => (
         <TaskItem
           key={task.id}
           task={task}
-          openedMemoId={openedMemoId}
+          isDetailOpen={openedMemoId === task.id}
           onToggleCompleted={onToggleCompleted}
           onDelete={onDelete}
           onEdit={onEdit}
-          onSelect={onSelect} 
+          onToggleDetail={onToggleDetail}
         />
       ))}
     </ul>
   );
 }
+
+export default memo(TaskListComponent);

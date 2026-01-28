@@ -1,37 +1,91 @@
+// ============================================
+// 基本型定義
+// ============================================
 
-// 1️⃣ タスクの基本型
+/** 優先度 */
+export type Priority = "high" | "middle" | "low";
+
+/** フィルター種別 */
+export type FilterType = "all" | "active" | "completed" | Priority;
+
+/** ソート種別 */
+export type SortType = "none" | "priority" | "dueDate";
+
+/** タスク */
 export type Task = {
-  id: string;          // 一意のID
-  title: string;       // タイトル
-  dueDate?: string;    // 期限（任意）
-  memo?: string;       // メモ（任意）
-  priority: "high" | "middle" | "low"; // 優先度
-  completed: boolean;  // 完了フラグ
+  id: string;
+  title: string;
+  dueDate?: string;
+  memo?: string;
+  priority: Priority;
+  completed: boolean;
 };
 
-// 2️⃣ フォームの状態
+/** フォームの状態 */
 export type FormState = {
   title: string;
   dueDate: string;
   memo: string;
-  priority: "high" | "middle" | "low";
+  priority: Priority;
 };
 
-// 3️⃣ 空フォームの初期値
-export const emptyForm: FormState = {
+/** 空フォームの初期値 */
+export const EMPTY_FORM: FormState = {
   title: "",
   dueDate: "",
   memo: "",
   priority: "middle",
 };
 
-// 4️⃣ TaskForm 用 Props
-export type TaskFormProps = {
-  form: FormState;  // フォームの値
-  editingId: string | null;  // null → 新規追加、文字列 → 編集中
-  setForm: React.Dispatch<React.SetStateAction<FormState>>; // 親の setForm
-  onSave: () => void;      // 保存ボタン
-  onCancel: () => void;    // キャンセルボタン
+// ============================================
+// コンポーネント Props 型
+// ============================================
+
+/** TaskItem 用 Props */
+export type TaskItemProps = {
+  task: Task;
+  isDetailOpen: boolean;
+  onToggleCompleted: (id: string) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
+  onToggleDetail: (id: string) => void;
 };
 
+/** TaskList 用 Props */
+export type TaskListProps = {
+  tasks: Task[];
+  openedMemoId: string | null;
+  onToggleCompleted: (id: string) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
+  onToggleDetail: (id: string) => void;
+};
 
+/** TaskForm 用 Props */
+export type TaskFormProps = {
+  form: FormState;
+  isEditing: boolean;
+  onChangeTitle: (value: string) => void;
+  onChangeDueDate: (value: string) => void;
+  onChangeMemo: (value: string) => void;
+  onChangePriority: (value: Priority) => void;
+  onSave: () => void;
+  onCancel: () => void;
+};
+
+// ============================================
+// 定数
+// ============================================
+
+/** バリデーション定数 */
+export const VALIDATION = {
+  TITLE_MAX_LENGTH: 30,
+  MEMO_MAX_LENGTH: 100,
+} as const;
+
+/** 優先度の表示順序（ソート用） */
+export const PRIORITY_ORDER: Record<Priority, number> = {
+  high: 3,
+  middle: 2,
+  low: 1,
+};

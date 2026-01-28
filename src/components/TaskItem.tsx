@@ -1,45 +1,68 @@
 "use client";
 
-import { Task } from "../types/task";
+import { memo } from "react";
+import { TaskItemProps, Priority } from "../types/task";
 
-type TaskItemProps = {
-  task: Task;
-  openedMemoId: string | null;
-  onToggleCompleted: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (id: string) => void;
-  onSelect: (id: string) => void;
+/** 優先度に応じたスタイルを返す */
+const getPriorityStyle = (priority: Priority) => {
+  const styles: Record<Priority, string> = {
+    high: "bg-red-100 text-red-600",
+    middle: "bg-orange-100 text-orange-600",
+    low: "bg-green-100 text-green-600",
+  };
+  return styles[priority];
 };
 
-export default function TaskItem(props: TaskItemProps) {
-  const {
-    task,openedMemoId,onToggleCompleted,onDelete,onEdit,onSelect,} = props;
-
-
-    
+/**
+ * 個別タスクの表示コンポーネント
+ */
+function TaskItemComponent({
+  task,
+  isDetailOpen,
+  onToggleCompleted,
+  onDelete,
+  onEdit,
+  onToggleDetail,
+}: TaskItemProps) {
   return (
-    <li className={`border rounded-lg p-4 sm:p-3 ${task.completed ? "bg-gray-50 opacity-60" : "bg-white"}`}> 
-      <div className="flex justify-between gap-3">  {/* ===== 左：情報エリア ===== */}
-        <div className="flex items-start gap-3">  {/* チェック */}
-          <input type="checkbox" checked={task.completed} 
-            onChange={() => onToggleCompleted(task.id)} className="mt-1"
+    <li
+      className={`border rounded-lg p-4 sm:p-3 ${
+        task.completed ? "bg-gray-50 opacity-60" : "bg-white"
+      }`}
+    >
+      <div className="flex justify-between gap-3">
+        {/* 左側: タスク情報 */}
+        <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={task.completed}
+            onChange={() => onToggleCompleted(task.id)}
+            className="mt-1 cursor-pointer"
           />
-        
-          <div className="flex flex-col"> {/* タスク情報 */}
-            <span className={`cursor-pointer font-medium text-base ${task.completed ? "line-through text-gray-400"
-              : "text-gray-900"}`}
-              onClick={() => onEdit(task.id)} 
+
+          <div className="flex flex-col">
+            <span
+              className={`cursor-pointer font-medium text-base ${
+                task.completed
+                  ? "line-through text-gray-400"
+                  : "text-gray-900 hover:text-blue-600"
+              }`}
+              onClick={() => onEdit(task.id)}
             >
               {task.title}
-            </span>  {/*font-medium→ 主役感 text-base → サイズ固定（環境差を防ぐ） */}
+            </span>
 
             <div className="mt-1 flex items-center gap-2 text-sm text-gray-500">
-              <span className={`px-2 py-0.5 rounded text-xs 
-                font-semibold ${task.priority === "high"? "bg-red-100 text-red-600"  
-                : task.priority === "middle"? "bg-orange-100 text-orange-600"
-                : "bg-green-100 text-green-600"}`}
-              >  {/*<span className={` ... `}>文字列の中に JavaScript を埋め込める構文  */}
-                [{task.priority}]
+              <span
+                className={`px-2 py-0.5 rounded text-xs font-semibold ${getPriorityStyle(
+                  task.priority
+                )}`}
+              >
+                {task.priority === "high"
+                  ? "高"
+                  : task.priority === "middle"
+                  ? "中"
+                  : "低"}
               </span>
 
               {task.dueDate && <span>期限: {task.dueDate}</span>}
@@ -47,28 +70,34 @@ export default function TaskItem(props: TaskItemProps) {
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-1 text-sm"> {/* ===== 右：操作エリア ===== */}
+        {/* 右側: 操作ボタン */}
+        <div className="flex flex-col items-end gap-1 text-sm">
           {task.memo && (
-            <button className=" text-blue-500 hover:underline"
-              onClick={() => onSelect(task.id)}
+            <button
+              className="text-blue-500 hover:underline"
+              onClick={() => onToggleDetail(task.id)}
             >
-              {openedMemoId === task.id ? "詳細を閉じる" : "詳細"} 
+              {isDetailOpen ? "詳細を閉じる" : "詳細"}
             </button>
           )}
 
-          <button className=" text-red-500 hover:underline"
+          <button
+            className="text-red-500 hover:underline"
             onClick={() => onDelete(task.id)}
           >
             削除
           </button>
-        </div> 
-      </div>
-      
-      {openedMemoId === task.id && task.memo && ( 
-        <div className="mt-2 ml-6 text-sm text-gray-600"> 
-          メモ：{task.memo}
         </div>
-      )} {/* ===== メモ ===== */}
+      </div>
+
+      {/* メモ詳細 */}
+      {isDetailOpen && task.memo && (
+        <div className="mt-2 ml-6 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+          メモ: {task.memo}
+        </div>
+      )}
     </li>
   );
 }
+
+export default memo(TaskItemComponent);
