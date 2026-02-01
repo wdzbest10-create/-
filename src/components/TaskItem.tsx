@@ -12,10 +12,7 @@ type TaskItemProps = {
 };
 
 export default function TaskItem(props: TaskItemProps) {
-  const {
-    task,openedMemoId,onToggleCompleted,onDelete,onEdit,onSelect,} = props;
-
-
+  const { task,openedMemoId,onToggleCompleted,onDelete,onEdit,onSelect,} = props;
     
   return (
     <li className={`border rounded-lg p-4 sm:p-3 ${task.completed ? "bg-gray-50 opacity-60" : "bg-white"}`}> 
