@@ -199,10 +199,10 @@ export default function Page() {
             }
           />
           <button
-            className="mt-4 w-full cursor-pointer bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            className="mt-4 w-full cursor-pointer bg-yellow-500 text-black py-2 rounded-lg hover:bg-blue-600"
             onClick={() => setIsFormOpen(true)}
           >
-            タスクを追加
+            タスクを追加(ブランチ)
           </button>
         </div>
       )}
